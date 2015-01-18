@@ -39,7 +39,7 @@ namespace ShimabuttsIrcBot.Projects
                 _lastChangedTime = DateTime.UtcNow;
                 return;
             }
-            if (waitingAtRole.Value != waitingAtRoleNew.Value) // First is null
+            if (waitingAtRoleNew != null && waitingAtRole.Value != waitingAtRoleNew.Value) // First is null
                 _lastChangedTime = DateTime.UtcNow;
         }
 
@@ -56,7 +56,7 @@ namespace ShimabuttsIrcBot.Projects
                 _lastChangedTime = DateTime.UtcNow;
                 return;
             }
-            if (waitingAtRole.Value != waitingAtRoleNew.Value) // First is null
+            if (waitingAtRoleNew != null && waitingAtRole.Value != waitingAtRoleNew.Value) // First is null
                 _lastChangedTime = DateTime.UtcNow;
         }
 

@@ -28,7 +28,7 @@ namespace ShimabuttsIrcBot.Commands
                     {
                         ircClient.Message("#Piroket", string.Format("{0} is done for {1}. Waiting on {2} - {3}",
                             role,
-                            splits[1],
+                            projects[splits[1]].Name,
                             projects[splits[1]].WaitingAt(),
                             string.Join(",", projects[splits[1]].CheckProjectForRole(waitingAtRole.Value)))
                             );

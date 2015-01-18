@@ -18,6 +18,7 @@ namespace ShimabuttsIrcBot.Commands
                 if (project != null)
                 {
                     projects.RemoveAlias(alias);
+                    redis.RemoveAliasForProject(project.Name, alias);
                     ircClient.Message("#Piroket", string.Format("Alias {0} removed for {1}", alias, project.Name));
                 }
                 else

@@ -19,7 +19,7 @@ namespace ShimabuttsIrcBot.Commands
                     {
                         var waitingForHowLong = projects[splits[1]].WaitingForHowLong();
                         ircClient.Message("#Piroket", string.Format("{0} is waiting on {1}, {2} for {3}",
-                            splits[1],
+                            projects[splits[1]].Name,
                             projects[splits[1]].WaitingAt(),
                             string.Join(",", projects[splits[1]].CheckProjectForRole(waitingAtRole.Value)),
                             string.Format("{0} days, {1} hours and {2} minutes.", waitingForHowLong.Days, waitingForHowLong.Hours, waitingForHowLong.Minutes))
