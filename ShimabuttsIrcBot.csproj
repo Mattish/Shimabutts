@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AddAliasCommand.cs" />
     <Compile Include="Commands\CommandsCommand.cs" />
     <Compile Include="Commands\BlameCommand.cs" />
     <Compile Include="Commands\AssignCommand.cs" />
@@ -72,14 +73,16 @@
     <Compile Include="Commands\NewMangoCommand.cs" />
     <Compile Include="Commands\NewAnimeCommand.cs" />
     <Compile Include="Commands\NotImplementedCommand.cs" />
-    <Compile Include="Project\ProjectQueryResponse.cs" />
+    <Compile Include="Projects\ProjectsWithAlias.cs" />
+    <Compile Include="Projects\ProjectQueryResponse.cs" />
     <Compile Include="Commands\RelieveCommand.cs" />
-    <Compile Include="Project\Role.cs" />
+    <Compile Include="Projects\Role.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Project\Project.cs" />
+    <Compile Include="Projects\Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\RolesCommand.cs" />
-    <Compile Include="Project\SequencedRoles.cs" />
+    <Compile Include="Projects\SequencedRoles.cs" />
+    <Compile Include="Commands\RemoveAliasCommand.cs" />
     <Compile Include="ShimabuttsBot.cs" />
     <Compile Include="ShimabuttsRedis.cs" />
     <Compile Include="Commands\SpeedilyMessageCommand.cs" />

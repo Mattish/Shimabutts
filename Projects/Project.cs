@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ShimabuttsIrcBot.Project
+namespace ShimabuttsIrcBot.Projects
 {
     public class Project : SequencedRoles
     {

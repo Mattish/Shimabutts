@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using ServiceStack.Redis;
-using ShimabuttsIrcBot.Project;
+using ShimabuttsIrcBot.Projects;
 
 namespace ShimabuttsIrcBot
 {
@@ -22,6 +23,16 @@ namespace ShimabuttsIrcBot
         public void RemoveNameFromRole(string project, string name, Role role)
         {
             _redisClient.RemoveItemFromSet(string.Format("Projects:{0}:Roles:{1}", project, role), name);
+        }
+
+        public void AddAliasForProject(string project, string alias)
+        {
+            _redisClient.AddItemToSet(string.Format("Projects:{0}:Aliases", project), alias);
+        }
+
+        public void RemoveAliasForProject(string project, string alias)
+        {
+            _redisClient.RemoveItemFromSet(string.Format("Projects:{0}:Aliases", project), alias);
         }
 
         public void SetRoleDone(string project, Role role)
@@ -65,9 +76,9 @@ namespace ShimabuttsIrcBot
             SetRoleDone(project, Role.RD);
         }
 
-        public IEnumerable<Project.Project> GetAllProjects()
+        public ProjectsWithAlias GetAllProjects()
         {
-            var projects = new HashSet<Project.Project>();
+            var projectsWithAlias = new ProjectsWithAlias();
 
             var mangoProjectNames = _redisClient.GetAllItemsFromSet("MangoProjects");
             var animeProjectNames = _redisClient.GetAllItemsFromSet("AnimeProjects");
@@ -75,7 +86,7 @@ namespace ShimabuttsIrcBot
             //Mango
             foreach (var projectName in mangoProjectNames)
             {
-                var newProject = new Project.Project(projectName);
+                var newProject = new Project(projectName);
                 foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
                 {
                     var whoInRole = _redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Roles:{1}", projectName, role));
@@ -91,13 +102,18 @@ namespace ShimabuttsIrcBot
                     var dateTime = GetTimeWaiting(projectName);
                     newProject.SetDateTime(dateTime);
                 }
-                projects.Add(newProject);
+                projectsWithAlias.Add(newProject);
+                var aliasForProject = _redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Aliases", projectName));
+                foreach (var alias in aliasForProject)
+                {
+                    projectsWithAlias.AddAlias(projectName, alias);
+                }
             }
 
             //Anime
             foreach (var projectName in animeProjectNames)
             {
-                var newProject = new Project.Project(projectName, false);
+                var newProject = new Project(projectName, false);
                 foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
                 {
                     var whoInRole = _redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Roles:{1}", projectName, role));
@@ -111,10 +127,15 @@ namespace ShimabuttsIrcBot
                     else
                         newProject.SetAsUndone(role);
                 }
-                projects.Add(newProject);
+                projectsWithAlias.Add(newProject);
+                var aliasForProject = _redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Aliases", projectName));
+                foreach (var alias in aliasForProject)
+                {
+                    projectsWithAlias.AddAlias(projectName, alias);
+                }
             }
 
-            return projects;
+            return projectsWithAlias;
         }
     }
 }

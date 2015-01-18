@@ -1,4 +1,4 @@
-﻿namespace ShimabuttsIrcBot.Project
+﻿namespace ShimabuttsIrcBot.Projects
 {
     public enum ProjectQueryResponse
     {

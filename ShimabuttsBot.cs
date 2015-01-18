@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using NetIrc2;
 using NetIrc2.Events;
+using ShimabuttsIrcBot.Projects;
 
 namespace ShimabuttsIrcBot
 {
@@ -11,7 +12,7 @@ namespace ShimabuttsIrcBot
         private readonly ShimabuttsSettings _settings;
         private readonly IrcClient _client;
         private ShimabuttsRedis _redisButts;
-        private readonly Dictionary<string, Project.Project> _projects = new Dictionary<string, Project.Project>();
+        private ProjectsWithAlias _projects = new ProjectsWithAlias();
 
         public ShimabuttsBot(ShimabuttsSettings settings)
         {
@@ -28,11 +29,9 @@ namespace ShimabuttsIrcBot
         public void Start()
         {
             _redisButts = new ShimabuttsRedis();
-            foreach (var project in _redisButts.GetAllProjects())
-            {
-                _projects.Add(project.Name, project);
-                Console.WriteLine("Loaded project {0}", project.Name);
-            }
+            var dbProjects = _redisButts.GetAllProjects();
+            if (dbProjects.Count > 0)
+                _projects = dbProjects;
 
             _client.Connect(_settings.IrcServer);
             while (true)

@@ -1,4 +1,5 @@
-using ShimabuttsIrcBot.Project;
+
+using ShimabuttsIrcBot.Projects;
 
 namespace ShimabuttsIrcBot
 {

@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using NetIrc2;
 using NetIrc2.Events;
+using ShimabuttsIrcBot.Projects;
 
 namespace ShimabuttsIrcBot.Commands
 {
     public class RelieveCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, Dictionary<string, Project.Project> projects, ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects, ShimabuttsRedis redis)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length == 4)
             {
-                if (!projects.ContainsKey(splits[1]))
+                if (!projects.HasProject(splits[1]))
                 {
                     ircClient.Message("#Piroket", "No project by that name.");
                     return;

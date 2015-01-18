@@ -1,3 +1,4 @@
+using System;
 using NetIrc2.Events;
 using ShimabuttsIrcBot.Commands;
 
@@ -39,6 +40,10 @@ namespace ShimabuttsIrcBot
                         return new NotImplementedCommand();
                     case ".whodoes":
                         return new WhoDoesCommand();
+                    case ".addAlias":
+                        return new AddAliasCommand();
+                    case ".removeAlias":
+                        return new RemoveAliasCommand();
                     case ".mattishpls":
                         return new SpeedilyMessageCommand("Mattish");
                     case ".kuwapls":
