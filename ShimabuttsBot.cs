@@ -17,6 +17,7 @@ namespace ShimabuttsIrcBot
         {
             _settings = settings;
             _client = new IrcClient();
+            _client.Connect(settings.IrcServer);
             _client.GotNotice += _client_GotNotice;
             _client.Connected += client_Connected;
             _client.GotIrcError += _client_GotIrcError;
