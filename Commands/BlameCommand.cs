@@ -7,7 +7,7 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class BlameCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects, ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length == 2)

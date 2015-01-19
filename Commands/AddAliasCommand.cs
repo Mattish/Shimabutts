@@ -6,8 +6,7 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class AddAliasCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects,
-            ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length == 3)
@@ -19,7 +18,6 @@ namespace ShimabuttsIrcBot.Commands
                 if (project != null)
                 {
                     projects.AddAlias(originalName, alias);
-                    redis.AddAliasForProject(originalName, alias);
                     ircClient.Message("#Piroket", string.Format("Project {0} now available by {1}", originalName, alias));
                 }
                 else

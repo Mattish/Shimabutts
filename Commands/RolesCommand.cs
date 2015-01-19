@@ -8,7 +8,7 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class RolesCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects, ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             ircClient.Message("#Piroket", string.Join(",", Enum.GetValues(typeof(Role)).ToString()));
         }

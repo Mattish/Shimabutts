@@ -7,16 +7,15 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class NewAnimeCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects, ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length == 2)
             {
                 if (!projects.HasProject(splits[1]))
                 {
-                    projects.Add(new Project(splits[1], false));
+                    projects.Add(splits[1], false);
                     ircClient.Message("#Piroket", string.Format("Created new Anime project {0}", splits[1]));
-                    redis.AddAnimeProject(splits[1]);
                 }
                 else
                 {

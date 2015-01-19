@@ -81,13 +81,13 @@
     <Compile Include="Projects\Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\RolesCommand.cs" />
-    <Compile Include="Projects\SequencedRoles.cs" />
     <Compile Include="Commands\RemoveAliasCommand.cs" />
     <Compile Include="ShimabuttsBot.cs" />
-    <Compile Include="ShimabuttsRedis.cs" />
+    <Compile Include="GenericShimabuttsRedis.cs" />
     <Compile Include="Commands\SpeedilyMessageCommand.cs" />
     <Compile Include="Commands\UndoneCommand.cs" />
     <Compile Include="Commands\WhoDoesCommand.cs" />
+    <Compile Include="ProjectShimabuttsRedis.cs" />
     <Compile Include="ShimabuttsSettings.cs" />
   </ItemGroup>
   <ItemGroup>

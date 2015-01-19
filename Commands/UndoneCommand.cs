@@ -7,7 +7,7 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class UndoneCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects, ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length == 3)
@@ -21,8 +21,6 @@ namespace ShimabuttsIrcBot.Commands
                         return;
                     }
                     projects[splits[1]].SetAsUndone(role.Value);
-                    redis.SetRoleUndone(splits[1], role.Value);
-                    redis.SetTimeWaiting(splits[1], projects[splits[1]].GetDateTime());
                     var waitingAtRole = projects[splits[1]].WaitingAt();
                     if (waitingAtRole.HasValue)
                     {

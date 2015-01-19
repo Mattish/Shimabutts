@@ -7,7 +7,7 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class RelieveCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects, ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length == 4)
@@ -22,8 +22,6 @@ namespace ShimabuttsIrcBot.Commands
                 {
                     var result = projects[splits[1]].RemoveNameFromRole(splits[2], role.Value);
                     ircClient.Message("#Piroket", result.ToString());
-                    redis.RemoveNameFromRole(splits[1], splits[2], role.Value);
-                    redis.SetTimeWaiting(splits[1], projects[splits[1]].GetDateTime());
                 }
                 else
                 {

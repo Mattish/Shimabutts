@@ -6,8 +6,7 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class RemoveAliasCommand : BotCommand
     {
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects,
-            ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length == 2)
@@ -18,7 +17,6 @@ namespace ShimabuttsIrcBot.Commands
                 if (project != null)
                 {
                     projects.RemoveAlias(alias);
-                    redis.RemoveAliasForProject(project.Name, alias);
                     ircClient.Message("#Piroket", string.Format("Alias {0} removed for {1}", alias, project.Name));
                 }
                 else

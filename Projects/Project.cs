@@ -1,24 +1,61 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using ServiceStack.Redis;
 
 namespace ShimabuttsIrcBot.Projects
 {
-    public class Project : SequencedRoles
+    public class Project
     {
-        private readonly Dictionary<Role, HashSet<string>> _roles = new Dictionary<Role, HashSet<string>>();
-        private readonly Dictionary<string, HashSet<Role>> _rolesReserve = new Dictionary<string, HashSet<Role>>();
+        private readonly ProjectShimabuttsRedis _redis;
+        private DateTime _lastChangedTime = DateTime.UtcNow;
 
         public string Name { get; private set; }
+        public bool IsMango { get; private set; }
 
-        public Project(string name, bool isMango = true)
-            : base(isMango)
+        public Project(string name, RedisClient redis, bool isMango = true)
         {
+            _redis = new ProjectShimabuttsRedis(redis, name);
             Name = name;
+            IsMango = isMango;
+            RoleDoneCheck(isMango);
+        }
+
+        private Dictionary<Role, bool> RoleDoneCheck(bool isMango)
+        {
+            var dictionary = new Dictionary<Role, bool>();
+            foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
+            {
+                var isRoleDone = _redis.GetRoleDone(role);
+                dictionary[role] = isRoleDone;
+            }
+
+            if (isMango)
+            {
+                _redis.SetRoleDone(Role.TM);
+            }
+            else
+            {
+                _redis.SetRoleDone(Role.CL);
+                _redis.SetRoleDone(Role.RD);
+            }
+            return dictionary;
+        }
+
+        private Dictionary<Role, HashSet<string>> RolePersonCheck()
+        {
+            var dictionary = new Dictionary<Role, HashSet<string>>();
+            foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
+            {
+                var whosDoing = _redis.GetNamesFromRole(role);
+                dictionary[role] = whosDoing;
+            }
+            return dictionary;
         }
 
         public string GetSummary()
         {
             string summary = "";
-            foreach (var role in _roles)
+            foreach (var role in RolePersonCheck())
             {
                 if (role.Value != null && role.Value.Count > 0)
                 {
@@ -32,58 +69,95 @@ namespace ShimabuttsIrcBot.Projects
 
         public IEnumerable<Role> CheckProjectForName(string name)
         {
-            if (_rolesReserve.ContainsKey(name))
+            var rolesPersonDoes = new HashSet<Role>();
+            foreach (var role in RolePersonCheck())
             {
-                return _rolesReserve[name];
+                if (role.Value.Contains(name))
+                {
+                    rolesPersonDoes.Add(role.Key);
+                }
             }
-            else
-            {
-                return new Role[0];
-            }
+            return rolesPersonDoes;
         }
 
         public IEnumerable<string> CheckProjectForRole(Role role)
         {
-            if (_roles.ContainsKey(role))
-            {
-                return _roles[role];
-            }
-            else
-            {
-                return new string[0];
-            }
+            return _redis.GetNamesFromRole(role);
         }
 
         public ProjectQueryResponse AddNameToRole(string name, Role role)
         {
-            if (!_roles.ContainsKey(role))
-            {
-                _roles.Add(role, new HashSet<string>());
-            }
-            if (_roles[role].Contains(name))
-                return ProjectQueryResponse.AlreadyThere;
-            _roles[role].Add(name);
-            if (!_rolesReserve.ContainsKey(name))
-            {
-                _rolesReserve.Add(name, new HashSet<Role>());
-            }
-            _rolesReserve[name].Add(role);
+            _redis.AddNameToRole(name, role);
+            _redis.SetTimeWaiting(GetDateTime());
             return ProjectQueryResponse.Added;
         }
 
         public ProjectQueryResponse RemoveNameFromRole(string name, Role role)
         {
-            if (!_roles.ContainsKey(role))
+            _redis.RemoveNameFromRole(name, role);
+            _redis.SetTimeWaiting(GetDateTime());
+            return ProjectQueryResponse.Removed;
+        }
+
+        public void SetAsDone(Role role)
+        {
+            var waitingAtRole = WaitingAt();
+            _redis.SetRoleDone(role);
+            var waitingAtRoleNew = WaitingAt();
+            if (!waitingAtRole.HasValue && !waitingAtRoleNew.HasValue) // Both null
+                return;
+            if (!waitingAtRole.HasValue)
             {
-                _roles.Add(role, new HashSet<string>());
+                // First is null
+                _lastChangedTime = DateTime.UtcNow;
+                return;
             }
-            if (_roles[role].Contains(name))
+            if (waitingAtRoleNew != null && waitingAtRole.Value != waitingAtRoleNew.Value) // First is null
+                _lastChangedTime = DateTime.UtcNow;
+        }
+
+        public void SetAsUndone(Role role)
+        {
+            var waitingAtRole = WaitingAt();
+            _redis.SetRoleUndone(role);
+            var waitingAtRoleNew = WaitingAt();
+            if (!waitingAtRole.HasValue && !waitingAtRoleNew.HasValue) // Both null
+                return;
+            if (!waitingAtRole.HasValue)
             {
-                _roles[role].Remove(name);
-                _rolesReserve[name].Remove(role);
-                return ProjectQueryResponse.Removed;
+                // First is null
+                _lastChangedTime = DateTime.UtcNow;
+                return;
             }
-            return ProjectQueryResponse.WasntThere;
+            if (waitingAtRoleNew != null && waitingAtRole.Value != waitingAtRoleNew.Value) // First is null
+                _lastChangedTime = DateTime.UtcNow;
+        }
+
+        public TimeSpan WaitingForHowLong()
+        {
+            return DateTime.UtcNow - _lastChangedTime;
+        }
+
+        public void SetDateTime(DateTime dateTime)
+        {
+            _lastChangedTime = dateTime;
+        }
+
+        public DateTime GetDateTime()
+        {
+            return _lastChangedTime;
+        }
+
+        public Role? WaitingAt()
+        {
+            foreach (var role in (Role[])Enum.GetValues(typeof(Role)))
+            {
+                if (!_redis.GetRoleDone(role))
+                {
+                    return role;
+                }
+            }
+            return null;
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using NetIrc2;
 using NetIrc2.Events;
 using ShimabuttsIrcBot.Projects;
@@ -8,13 +7,13 @@ namespace ShimabuttsIrcBot.Commands
 {
     public class SpeedilyMessageCommand : BotCommand
     {
-        private string _name;
+        private readonly string _name;
         public SpeedilyMessageCommand(string name)
         {
             _name = name;
         }
 
-        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects, ShimabuttsRedis redis)
+        protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
             if (splits.Length > 1)

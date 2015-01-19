@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using NetIrc2;
 using NetIrc2.Events;
+using ServiceStack.Redis;
 using ShimabuttsIrcBot.Projects;
 
 namespace ShimabuttsIrcBot
@@ -11,8 +11,7 @@ namespace ShimabuttsIrcBot
     {
         private readonly ShimabuttsSettings _settings;
         private readonly IrcClient _client;
-        private ShimabuttsRedis _redisButts;
-        private ProjectsWithAlias _projects = new ProjectsWithAlias();
+        private ProjectsWithAlias _projects;
 
         public ShimabuttsBot(ShimabuttsSettings settings)
         {
@@ -28,10 +27,8 @@ namespace ShimabuttsIrcBot
 
         public void Start()
         {
-            _redisButts = new ShimabuttsRedis();
-            var dbProjects = _redisButts.GetAllProjects();
-            if (dbProjects.Count > 0)
-                _projects = dbProjects;
+            var redisClient = new RedisClient("localhost");
+            _projects = new ProjectsWithAlias(redisClient);
 
             _client.Connect(_settings.IrcServer);
             while (true)
@@ -43,7 +40,7 @@ namespace ShimabuttsIrcBot
         private void _client_GotMessage(object sender, ChatMessageEventArgs e)
         {
             var command = CommandTranslator.TranslateToCommand(e);
-            command.RunCommand(e, _client, _projects, _redisButts);
+            command.RunCommand(e, _client, _projects);
         }
 
         private void _client_GotNotice(object sender, ChatMessageEventArgs e)
