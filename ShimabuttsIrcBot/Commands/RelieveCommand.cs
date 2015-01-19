@@ -20,7 +20,7 @@ namespace ShimabuttsIrcBot.Commands
                 var role = splits[3].ParseStringToRole();
                 if (role.HasValue)
                 {
-                    var result = projects[splits[1]].RemoveNameFromRole(splits[2], role.Value);
+                    var result = projects.GetByName(splits[1]).RemoveNameFromRole(splits[2], role.Value);
                     ircClient.Message("#Piroket", result.ToString());
                 }
                 else

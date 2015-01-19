@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ServiceStack.Redis;
 using ShimabuttsIrcBot.Projects;
 
-namespace ShimabuttsIrcBot
+namespace ShimabuttsIrcBot.Redis
 {
     public class GenericShimabuttsRedis
     {
@@ -29,6 +29,25 @@ namespace ShimabuttsIrcBot
             return new HashSet<string>(_redisClient.GetAllItemsFromSet("Aliases"));
         }
 
+        public HashSet<string> GetAllDoneProjects()
+        {
+            return new HashSet<string>(_redisClient.GetAllItemsFromSet("Projects:IsDone"));
+        }
+
+        /*
+         * Returns 1 for Mango, 2 for Anime, 0 for doesn't exist.
+         */
+        public int DoesProjectExist(string project)
+        {
+            var mangoContains = _redisClient.SetContainsItem("MangoProjects", project);
+            var animeContains = _redisClient.SetContainsItem("AnimeProjects", project);
+            if (mangoContains)
+                return 1;
+            if (animeContains)
+                return 2;
+            return 0;
+        }
+
         public void AddNameToRole(string project, string name, Role role)
         {
             _redisClient.AddItemToSet(string.Format("Projects:{0}:Roles:{1}", project, role), name);
@@ -37,6 +56,11 @@ namespace ShimabuttsIrcBot
         public void RemoveNameFromRole(string project, string name, Role role)
         {
             _redisClient.RemoveItemFromSet(string.Format("Projects:{0}:Roles:{1}", project, role), name);
+        }
+
+        public HashSet<string> GetNamesFromRole(string project, Role role)
+        {
+            return new HashSet<string>(_redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Roles:{1}", project, role)));
         }
 
         public void AddAliasForProject(string project, string alias)
@@ -53,6 +77,11 @@ namespace ShimabuttsIrcBot
             _redisClient.Remove(string.Format("Aliases:{0}", alias));
         }
 
+        public HashSet<string> GetAliasForProject(string project)
+        {
+            return new HashSet<string>(_redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Aliases", project)));
+        }
+
         public string GetProjectFromAlias(string alias)
         {
             return _redisClient.Get<string>(string.Format("Aliases:{0}", alias));
@@ -66,6 +95,11 @@ namespace ShimabuttsIrcBot
         public void SetRoleUndone(string project, Role role)
         {
             _redisClient.Set(string.Format("Projects:{0}:Roles:{1}:IsDone", project, role), false);
+        }
+
+        public bool GetRoleDone(string project, Role role)
+        {
+            return _redisClient.Get<bool>(string.Format("Projects:{0}:Roles:{1}:IsDone", project, role));
         }
 
         public void SetTimeWaiting(string project, DateTime dateTime)
@@ -109,6 +143,16 @@ namespace ShimabuttsIrcBot
                 _redisClient.Del(string.Format("Projects:{0}:Roles:{1}:IsDone", project, role));
             }
             _redisClient.Del(string.Format("Projects:{0}:Aliases", project));
+        }
+
+        public void SetIsDone(string project)
+        {
+            _redisClient.AddItemToSet("Projects:IsDone", project);
+        }
+
+        public void SetUndone(string project)
+        {
+            _redisClient.RemoveItemFromSet("Projects:IsDone", project);
         }
     }
 }

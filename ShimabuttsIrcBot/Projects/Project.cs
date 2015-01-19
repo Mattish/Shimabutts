@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ServiceStack.Redis;
+using ShimabuttsIrcBot.Redis;
 
 namespace ShimabuttsIrcBot.Projects
 {
@@ -110,10 +111,15 @@ namespace ShimabuttsIrcBot.Projects
             {
                 // First is null
                 _lastChangedTime = DateTime.UtcNow;
+                _redis.SetIsDone();
                 return;
             }
-            if (waitingAtRoleNew != null && waitingAtRole.Value != waitingAtRoleNew.Value) // First is null
+            if (waitingAtRoleNew != null && waitingAtRole.Value != waitingAtRoleNew.Value)
+            {
+                // First is null
                 _lastChangedTime = DateTime.UtcNow;
+                _redis.SetUndone();
+            }
         }
 
         public void SetAsUndone(Role role)

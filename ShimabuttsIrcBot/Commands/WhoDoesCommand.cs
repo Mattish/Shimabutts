@@ -14,7 +14,7 @@ namespace ShimabuttsIrcBot.Commands
             {
                 if (projects.HasProject(splits[1]))
                 {
-                    ircClient.Message("#Piroket", projects[splits[1]].GetSummary());
+                    ircClient.Message("#Piroket", projects.GetByName(splits[1]).GetSummary());
                 }
                 else
                 {

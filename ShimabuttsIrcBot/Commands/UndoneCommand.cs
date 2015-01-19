@@ -5,24 +5,31 @@ using ShimabuttsIrcBot.Projects;
 
 namespace ShimabuttsIrcBot.Commands
 {
-    public class BlameCommand : BotCommand
+    public class UndoneCommand : BotCommand
     {
         protected override void SpecificCommand(ChatMessageEventArgs eventArgs, IrcClient ircClient, ProjectsWithAlias projects)
         {
             var splits = eventArgs.Message.ToString().Split(' ');
-            if (splits.Length == 2)
+            if (splits.Length == 3)
             {
                 if (projects.HasProject(splits[1]))
                 {
-                    var waitingAtRole = projects[splits[1]].WaitingAt();
+                    var role = splits[2].ParseStringToRole();
+                    if (!role.HasValue)
+                    {
+                        ircClient.Message("#Piroket", "wtf role is that");
+                        return;
+                    }
+                    var project = projects.GetByName(splits[1]);
+                    project.SetAsUndone(role.Value);
+                    var waitingAtRole = project.WaitingAt();
                     if (waitingAtRole.HasValue)
                     {
-                        var waitingForHowLong = projects[splits[1]].WaitingForHowLong();
-                        ircClient.Message("#Piroket", string.Format("{0} is waiting on {1}, {2} for {3}",
-                            projects[splits[1]].Name,
-                            projects[splits[1]].WaitingAt(),
-                            string.Join(",", projects[splits[1]].CheckProjectForRole(waitingAtRole.Value)),
-                            string.Format("{0} days, {1} hours and {2} minutes.", waitingForHowLong.Days, waitingForHowLong.Hours, waitingForHowLong.Minutes))
+                        ircClient.Message("#Piroket", string.Format("{0} is done for {1}. Waiting on {2} - {3}",
+                            role,
+                            project.Name,
+                            project.WaitingAt(),
+                            string.Join(",", project.CheckProjectForRole(waitingAtRole.Value)))
                             );
                     }
                     else
@@ -37,7 +44,7 @@ namespace ShimabuttsIrcBot.Commands
             }
             else
             {
-                ircClient.Message("#Piroket", "Usage: .blame [project]");
+                ircClient.Message("#Piroket", "Usage: .undone [project] [role]");
             }
         }
     }

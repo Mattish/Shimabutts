@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using ServiceStack.Redis;
 using ShimabuttsIrcBot.Projects;
-using HashSetString = System.Collections.Generic.HashSet<string>;
 
-namespace ShimabuttsIrcBot
+namespace ShimabuttsIrcBot.Redis
 {
     public class ProjectShimabuttsRedis
     {
@@ -26,9 +26,9 @@ namespace ShimabuttsIrcBot
             _redisClient.RemoveItemFromSet(string.Format("Projects:{0}:Roles:{1}", _projectName, role), name);
         }
 
-        public HashSetString GetNamesFromRole(Role role)
+        public HashSet<string> GetNamesFromRole(Role role)
         {
-            return new HashSetString(_redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Roles:{1}", _projectName, role)));
+            return new HashSet<string>(_redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Roles:{1}", _projectName, role)));
         }
 
         public void AddAliasForProject(string alias)
@@ -41,9 +41,9 @@ namespace ShimabuttsIrcBot
             _redisClient.RemoveItemFromSet(string.Format("Projects:{0}:Aliases", _projectName), alias);
         }
 
-        public HashSetString GetAliasForProject()
+        public HashSet<string> GetAliasForProject()
         {
-            return new HashSetString(_redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Aliases", _projectName)));
+            return new HashSet<string>(_redisClient.GetAllItemsFromSet(string.Format("Projects:{0}:Aliases", _projectName)));
         }
 
         public void SetRoleDone(Role role)
@@ -69,6 +69,16 @@ namespace ShimabuttsIrcBot
         public DateTime GetTimeWaiting()
         {
             return _redisClient.Get<DateTime>(string.Format("Projects:{0}:DateTime", _projectName));
+        }
+
+        public void SetIsDone()
+        {
+            _redisClient.AddItemToSet("Projects:IsDone", _projectName);
+        }
+
+        public void SetUndone()
+        {
+            _redisClient.RemoveItemFromSet("Projects:IsDone", _projectName);
         }
     }
 }

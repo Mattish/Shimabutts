@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ServiceStack.Redis;
+using ShimabuttsIrcBot.Redis;
 
 namespace ShimabuttsIrcBot.Projects
 {
@@ -106,11 +107,6 @@ namespace ShimabuttsIrcBot.Projects
         public int Count
         {
             get { return _projects.Count; }
-        }
-
-        public Project this[string name]
-        {
-            get { return GetByName(name); }
         }
 
         public bool HasProject(string name)

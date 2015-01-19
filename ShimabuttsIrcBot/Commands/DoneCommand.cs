@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NetIrc2;
 using NetIrc2.Events;
 using ShimabuttsIrcBot.Projects;
@@ -20,21 +19,22 @@ namespace ShimabuttsIrcBot.Commands
                         ircClient.Message("#Piroket", "wtf role is that");
                         return;
                     }
-                    projects[splits[1]].SetAsDone(role.Value);
-                    var waitingAtRole = projects[splits[1]].WaitingAt();
+                    var project = projects.GetByName(splits[1]);
+                    project.SetAsDone(role.Value);
+                    var waitingAtRole = project.WaitingAt();
                     if (waitingAtRole.HasValue)
                     {
                         ircClient.Message("#Piroket", string.Format("{0} is done for {1}. Waiting on {2} - {3}",
                             role,
-                            projects[splits[1]].Name,
-                            projects[splits[1]].WaitingAt(),
-                            string.Join(",", projects[splits[1]].CheckProjectForRole(waitingAtRole.Value)))
+                            project.Name,
+                            project.WaitingAt(),
+                            string.Join(",", project.CheckProjectForRole(waitingAtRole.Value)))
                             );
 
                     }
                     else
                     {
-                        ircClient.Message("#Piroket", string.Format("{0} is done!", splits[1]));
+                        ircClient.Message("#Piroket", string.Format("{0} is done!", project.Name));
                     }
                 }
                 else

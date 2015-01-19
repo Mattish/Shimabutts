@@ -33,23 +33,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NetIrc2">
-      <HintPath>packages\NetIrc2.1.0.0.0\lib\NetIrc2.dll</HintPath>
+      <HintPath>..\packages\NetIrc2.1.0.0.0\lib\NetIrc2.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Common, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Common.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Interfaces.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Common.3.9.71\lib\net35\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Redis, Version=3.9.71.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\ServiceStack.Redis.3.9.71\lib\net35\ServiceStack.Redis.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Redis.3.9.71\lib\net35\ServiceStack.Redis.dll</HintPath>
     </Reference>
     <Reference Include="ServiceStack.Text, Version=3.9.11.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\ServiceStack.Text.3.9.11\lib\net35\ServiceStack.Text.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Text.3.9.11\lib\net35\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -83,11 +83,11 @@
     <Compile Include="Commands\RolesCommand.cs" />
     <Compile Include="Commands\RemoveAliasCommand.cs" />
     <Compile Include="ShimabuttsBot.cs" />
-    <Compile Include="GenericShimabuttsRedis.cs" />
+    <Compile Include="Redis\GenericShimabuttsRedis.cs" />
     <Compile Include="Commands\SpeedilyMessageCommand.cs" />
     <Compile Include="Commands\UndoneCommand.cs" />
     <Compile Include="Commands\WhoDoesCommand.cs" />
-    <Compile Include="ProjectShimabuttsRedis.cs" />
+    <Compile Include="Redis\ProjectShimabuttsRedis.cs" />
     <Compile Include="ShimabuttsSettings.cs" />
   </ItemGroup>
   <ItemGroup>

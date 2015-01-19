@@ -1,7 +1,7 @@
-# ShimabuttsIrcBot
-A nice irc bot for fansubbing and scanlating group tracking.
+# Shimabutts
+A nice group of apps for fansubbing and scanlating.
 
-## Program Sections
+## Irc bot
 
 ### Project
 
@@ -20,3 +20,7 @@ ShimabuttsRedis is where all the redis commands are. You need to have redis as y
 ShimabuttsBot is library magic.
 
 CommandTranslator is turning irc messages into commands.
+
+## API
+
+### ToDo
